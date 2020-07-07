@@ -25,7 +25,7 @@ namespace Working.Controllers
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
-            _logger.LogDebug("this is about page!");
+            _logger.LogDebug("this is about page!thanks");
             return View();
         }
 
