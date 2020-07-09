@@ -9,14 +9,20 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Dapper;
+using Microsoft.Data.Sqlite;
+using Working.Models.DataModel;
+using Microsoft.Extensions.Logging;
 
 namespace Working
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly ILogger<Startup> _logger;
+        public Startup(IConfiguration configuration,ILogger<Startup> logger)
         {
             Configuration = configuration;
+            _logger = logger;
         }
 
         public IConfiguration Configuration { get; }
@@ -24,7 +30,14 @@ namespace Working
         //依赖注入的地方,比如仓储类
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            _logger.LogInformation("测试数据库连接");
+            var connectionString = string.Format(Configuration.GetConnectionString("DefaultConnection"),
+                System.IO.Directory.GetCurrentDirectory());
+            using (var con = new SqliteConnection(connectionString))
+            {
+                var roles = con.Query<Role>("select * from roles").ToList();
+            }
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
