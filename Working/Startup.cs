@@ -13,6 +13,7 @@ using Dapper;
 using Microsoft.Data.Sqlite;
 using Working.Models.DataModel;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Working
 {
@@ -30,6 +31,7 @@ namespace Working
         //依赖注入的地方,比如仓储类
         public void ConfigureServices(IServiceCollection services)
         {
+            /*
             _logger.LogInformation("测试数据库连接");
             var connectionString = string.Format(Configuration.GetConnectionString("DefaultConnection"),
                 System.IO.Directory.GetCurrentDirectory());
@@ -37,7 +39,16 @@ namespace Working
             {
                 var roles = con.Query<Role>("select * from roles").ToList();
             }
-
+            */
+            //验证的注入
+            services.AddAuthentication(opts=> { opts.DefaultScheme=CookieAuthenticationDefaults.AuthenticationScheme})
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,opt=> 
+                {
+                    opt.LoginPath = new PathString("/login");
+                    opt.AccessDeniedPath = new PathString("home/error");
+                    opt.LogoutPath = new PathString("/.login");
+                    opt.Cookie.Path = "/";
+                });
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -64,6 +75,7 @@ namespace Working
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseAuthentication();//添加中间件
             app.UseCookiePolicy();
 
             app.UseMvc(routes =>
