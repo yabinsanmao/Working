@@ -41,14 +41,16 @@ namespace Working
             }
             */
             //验证的注入
-            services.AddAuthentication(opts=> { opts.DefaultScheme=CookieAuthenticationDefaults.AuthenticationScheme})
-                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,opt=> 
-                {
-                    opt.LoginPath = new PathString("/login");
-                    opt.AccessDeniedPath = new PathString("home/error");
-                    opt.LogoutPath = new PathString("/.login");
-                    opt.Cookie.Path = "/";
-                });
+            services.AddAuthentication(opts =>
+            {
+                opts.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, opt =>
+            {
+                opt.LoginPath = new PathString("/login");
+                opt.AccessDeniedPath = new PathString("/home/error");
+                opt.LogoutPath = new PathString("/.login");
+                opt.Cookie.Path = "/";
+            });
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.

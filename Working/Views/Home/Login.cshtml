@@ -1,5 +1,5 @@
 ﻿@{
-    Layout = "_Layout";
+    Layout =null;
 }
 <!DOCTYPE html>
 <html>
@@ -7,5 +7,12 @@
     <meta name="viewport" content="width=device-width" />
     <title>登录</title>
 </head>
-<body>登录</body>
+<body>
+	<form method="post" action="login">
+		<input type="text" name="username" />
+		<input type="password" name="password" />
+		<input type="submit" value="登录" />
+		<span style="color:red">@ViewBag.error</span>
+	</form>
+</body>
 </html>
