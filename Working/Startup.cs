@@ -31,15 +31,6 @@ namespace Working
         //依赖注入的地方,比如仓储类
         public void ConfigureServices(IServiceCollection services)
         {
-            /*
-            _logger.LogInformation("测试数据库连接");
-            var connectionString = string.Format(Configuration.GetConnectionString("DefaultConnection"),
-                System.IO.Directory.GetCurrentDirectory());
-            using (var con = new SqliteConnection(connectionString))
-            {
-                var roles = con.Query<Role>("select * from roles").ToList();
-            }
-            */
             //验证的注入
             services.AddAuthentication(opts =>
             {
@@ -47,18 +38,11 @@ namespace Working
             }).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, opt =>
             {
                 opt.LoginPath = new PathString("/login");
-                opt.AccessDeniedPath = new PathString("/home/error");
-                opt.LogoutPath = new PathString("/.login");
+                opt.LogoutPath = new PathString("/login");
+                opt.AccessDeniedPath = new PathString("/home/error");                
                 opt.Cookie.Path = "/";
             });
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-
-
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -78,7 +62,7 @@ namespace Working
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthentication();//添加中间件
-            app.UseCookiePolicy();
+            //app.UseCookiePolicy();
 
             app.UseMvc(routes =>
             {
