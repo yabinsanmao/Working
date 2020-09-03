@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Working.Models;
+using Working.Models.Respository;
 
 namespace Working.Controllers
 {
@@ -18,9 +19,11 @@ namespace Working.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        public HomeController(ILogger<HomeController> logger)
+        readonly IUserRepository _userRespository;
+        public HomeController(ILogger<HomeController> logger, IUserRepository userRespository)
         {
             _logger = logger;
+            _userRespository = userRespository;
         }
         //[Authorize]
         public IActionResult Index()
@@ -35,7 +38,7 @@ namespace Working.Controllers
             _logger.LogDebug("this is about page!thanks");
             return View();
         }
-        [Authorize(Roles ="Manager")]
+        [Authorize(Roles = "Manager")]
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";
@@ -65,23 +68,23 @@ namespace Working.Controllers
         }
         [AllowAnonymous]//允许匿名用户访问，任何用户都可以访问Login页面
         [HttpPost("login")]
-        public IActionResult Login(string userName, string passWord,string returnUrl)
+        public IActionResult Login(string userName, string passWord, string returnUrl)
         {
-            //测试登陆
-            if (userName == "aa" && passWord == "bb")
+            try
             {
+                var user = _userRespository.Login(userName, passWord);
                 var claims = new Claim[]
                 {
-                    new Claim(ClaimTypes.Role,"Leader"),
-                    new Claim(ClaimTypes.Name,"gsw"),
-                    new Claim(ClaimTypes.Sid,"1")
+                    new Claim(ClaimTypes.Role,user.RoleName),
+                    new Claim(ClaimTypes.Name,user.Name),
+                    new Claim(ClaimTypes.Sid,user.ID.ToString())
                 };
                 HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(new ClaimsIdentity(claims)));
-                return new RedirectResult(string.IsNullOrEmpty(returnUrl)?"/":returnUrl);
+                return new RedirectResult(string.IsNullOrEmpty(returnUrl) ? "/" : returnUrl);
             }
-            else
+            catch (Exception exc)
             {
-                ViewBag.error = "用户名或密码错误";
+                ViewBag.error = exc.Message;
                 return View();
             }
         }

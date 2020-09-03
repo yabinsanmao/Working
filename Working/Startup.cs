@@ -14,6 +14,7 @@ using Microsoft.Data.Sqlite;
 using Working.Models.DataModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Working.Models.Respository;
 
 namespace Working
 {
@@ -42,7 +43,7 @@ namespace Working
                 opt.AccessDeniedPath = new PathString("/home/error");                
                 opt.Cookie.Path = "/";
             });
-            
+            AddRepository(services);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -70,6 +71,14 @@ namespace Working
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+        /// <summary>
+        /// 注入仓储类
+        /// </summary>
+        /// <param name="services">服务容器</param>
+        public void AddRepository(IServiceCollection services)
+        {
+            services.AddScoped<IUserRepository, UserRepository>();//注入用户仓储
         }
     }
 }
