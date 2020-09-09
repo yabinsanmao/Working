@@ -15,6 +15,7 @@ using Working.Models.DataModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Working.Models.Respository;
+using System.Data;
 
 namespace Working
 {
@@ -78,6 +79,9 @@ namespace Working
         /// <param name="services">服务容器</param>
         public void AddRepository(IServiceCollection services)
         {
+            var connectionString = String.Format(Configuration.GetConnectionString("DefaultConnection"), System.IO.Directory.GetCurrentDirectory());
+            services.AddSingleton(connectionString);
+            services.AddScoped<IDbConnection,SqliteConnection>();
             services.AddScoped<IUserRepository, UserRepository>();//注入用户仓储
         }
     }
