@@ -83,6 +83,7 @@ namespace Working
             services.AddSingleton(connectionString);
             services.AddScoped<IDbConnection,SqliteConnection>();
             services.AddScoped<IUserRepository, UserRepository>();//注入用户仓储
+            services.AddScoped<IDepartmentRepository, DepartmentRepository>();//注入部门仓储
         }
     }
 }

@@ -18,10 +18,9 @@ namespace Working.Models.Respository
         IDbConnection _dbConnection;
         public UserRepository(IDbConnection dbConnection, string connectionString)
         {
-            _dbConnection = dbConnection;
-            _dbConnection.ConnectionString = connectionString;
-            
 
+            dbConnection.ConnectionString = connectionString;
+            _dbConnection = dbConnection;
         }
         /// <summary>
         /// 登陆

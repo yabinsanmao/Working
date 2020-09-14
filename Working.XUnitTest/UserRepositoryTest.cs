@@ -12,7 +12,11 @@ namespace Working.XUnitTest
 {
     [Trait("用户仓储层","UserRepository")]
     public class UserRepositoryTest
-    {        
+    {
+        #region 登陆测试
+        /// <summary>
+        /// 测试登陆正常值
+        /// </summary>
         [Fact]
         public void Login_Default_Return()
         {
@@ -24,7 +28,9 @@ namespace Working.XUnitTest
             var userRole = userRepository.Login("gsw", "gsw");
             Assert.NotNull(userRole);
         }
-
+        /// <summary>
+        /// 测试用户名或密码错误
+        /// </summary>
         [Fact]
         public void Login_Null_Exception()
         {
@@ -37,5 +43,6 @@ namespace Working.XUnitTest
 
             Assert.Contains("用户名或密码错误！",exc.Message);
         }
+        #endregion
     }
 }

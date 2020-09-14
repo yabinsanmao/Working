@@ -88,5 +88,10 @@ namespace Working.Controllers
                 return View();
             }
         }
+        [HttpGet("departments")]
+        public IActionResult Departments()
+        {
+            return View();
+        }
     }
 }
