@@ -8,7 +8,7 @@ namespace Working.Models
     public class LowercaseContractResolver:Newtonsoft.Json.Serialization.DefaultContractResolver
     {
         /// <summary>
-        /// 重写ResolvePropertyName
+        /// 重写ResolvePropertyName返回propertyName小写
         /// </summary>
         /// <param name="propertyName"></param>
         /// <returns></returns>

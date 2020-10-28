@@ -28,7 +28,7 @@ namespace Working.Models.Respository
         /// <returns></returns>
         public List<FullDepartment> GetAllPDepartment()
         {
-            return _dbConnection.Query<FullDepartment>("").ToList();
+            return _dbConnection.Query<FullDepartment>("select d.*,pd.departmentname as pdepartmentname from departments as d join departments as pd on d.pdepartmentid=pd.id").ToList();
 
         }
         /// <summary>
@@ -37,7 +37,18 @@ namespace Working.Models.Respository
         /// <returns></returns>
         public List<Department> GetAllDepartment()
         {
-            return _dbConnection.Query<Department>("").ToList();
+            return _dbConnection.Query<Department>("select * from departments").ToList();
+        }
+        /// <summary>
+        /// 添加部门
+        /// </summary>
+        /// <param name="department"></param>
+        /// <returns></returns>
+        public bool AddDepartment(Department department)
+        {
+            return _dbConnection.Execute("insert into departments(departmentname,pdepartmentid) values (@departmentname,@pdepartmentid)",new { 
+            departmentname=department.DepartmentName,pdepartmentid=department.PDepartmentID
+            }) > 0;
         }
     }
 }

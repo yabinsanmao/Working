@@ -18,5 +18,6 @@ namespace Working.Models.Respository
         /// </summary>
         /// <returns></returns>
         List<Department> GetAllDepartment();
+        bool AddDepartment(Department department);
     }
 }
