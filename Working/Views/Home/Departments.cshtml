@@ -177,12 +177,23 @@
 			},
 			success: function (backData) {
 				if (backData.result == 1) {
-					$("#AddModal").modal("hide");
+					//$("#AddModal").modal("hide");
 					window.location = "/departments";
 				}
 			},
 			error: function (error) {
 				alert(error.statusText);
+			}
+		})
+	}
+	function editClick() {
+		$.ajax({
+			method: "POST",
+			url: "editdepartment",
+			data: {
+				departmentname: $("").val(),
+				pdepartmentid: $("").val(),
+				id:""
 			}
 		})
 	}

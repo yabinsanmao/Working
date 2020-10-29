@@ -157,5 +157,34 @@ namespace Working.Controllers
                 return ToJson(BackResult.Exception, message: exc.Message);
             }
         }
+
+        [HttpPost("editdepartment")]
+        public IActionResult EditDepartment(Department department)
+        {
+            try
+            {
+                var result = _departmentRepository.EditDepartment(department);
+
+                return ToJson(result ? BackResult.Success : BackResult.Fail, message: result ? "修改成功" : "修改失败");
+            }
+            catch (Exception exc)
+            {
+                return ToJson(BackResult.Exception, message: exc.Message);
+            }
+        }
+        [HttpDelete("removedepartment")]
+        public IActionResult RemoveDepartment(int departmentID)
+        {
+            try
+            {
+                var result = _departmentRepository.RemoveDepartment(departmentID);
+
+                return ToJson(result ? BackResult.Success : BackResult.Fail, message: result ? "修改成功" : "修改失败");
+            }
+            catch (Exception exc)
+            {
+                return ToJson(BackResult.Exception, message: exc.Message);
+            }
+        }
     }
 }

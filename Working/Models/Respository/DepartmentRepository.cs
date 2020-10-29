@@ -50,5 +50,13 @@ namespace Working.Models.Respository
             departmentname=department.DepartmentName,pdepartmentid=department.PDepartmentID
             }) > 0;
         }
+        public bool EditDepartment(Department department)
+        {
+            return _dbConnection.Execute("update departments set departmentname=@departmentname,pdepartmentid=@pdepartmentid where id=@id", new { departmentname = department.DepartmentName, pdepartmentid = department.PDepartmentID, id = department.ID }) > 0;
+        }
+        public bool RemoveDepartment(int departmentID)
+        {
+            return _dbConnection.Execute("delete from departments where id=@id", new { id = departmentID }) > 0;
+        }
     }
 }

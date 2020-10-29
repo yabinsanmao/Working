@@ -19,5 +19,7 @@ namespace Working.Models.Respository
         /// <returns></returns>
         List<Department> GetAllDepartment();
         bool AddDepartment(Department department);
+        bool EditDepartment(Department department);
+        bool RemoveDepartment(int departmentID);
     }
 }
