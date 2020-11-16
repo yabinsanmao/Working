@@ -157,7 +157,11 @@ namespace Working.Controllers
                 return ToJson(BackResult.Exception, message: exc.Message);
             }
         }
-
+        /// <summary>
+        /// 编辑部门
+        /// </summary>
+        /// <param name="department"></param>
+        /// <returns></returns>
         [HttpPost("editdepartment")]
         public IActionResult EditDepartment(Department department)
         {
@@ -172,6 +176,11 @@ namespace Working.Controllers
                 return ToJson(BackResult.Exception, message: exc.Message);
             }
         }
+        /// <summary>
+        /// 删除部门
+        /// </summary>
+        /// <param name="departmentID"></param>
+        /// <returns></returns>
         [HttpDelete("removedepartment")]
         public IActionResult RemoveDepartment(int departmentID)
         {
@@ -179,7 +188,7 @@ namespace Working.Controllers
             {
                 var result = _departmentRepository.RemoveDepartment(departmentID);
 
-                return ToJson(result ? BackResult.Success : BackResult.Fail, message: result ? "修改成功" : "修改失败");
+                return ToJson(result ? BackResult.Success : BackResult.Fail, message: result ? "删除成功" : "删除失败");
             }
             catch (Exception exc)
             {
