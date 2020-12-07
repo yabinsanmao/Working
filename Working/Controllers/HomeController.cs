@@ -162,7 +162,7 @@ namespace Working.Controllers
         /// </summary>
         /// <param name="department"></param>
         /// <returns></returns>
-        [HttpPost("editdepartment")]
+        [HttpPut("editdepartment")]
         public IActionResult EditDepartment(Department department)
         {
             try

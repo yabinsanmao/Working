@@ -37,7 +37,7 @@
 	</div>
 </div>
 
-<div class="modal fade" id="ModiyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="ModifyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content" id="editdepartment">
 			<div class="modal-header">
@@ -57,7 +57,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button id="savaEditBtn" class="btn btn-success" v-on:click="savaDepartment">
+				<button id="savaEditBtn" class="btn btn-success" v-on:click="saveDepartment">
 					保存
 				</button>
 				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -119,6 +119,7 @@
 	$(function () {
 		LoadPDepartment();
 		LoadAddDepartmentSelect();
+		LoadModifyDepartmentSelect();
 	})
 	function LoadPDepartment() {
 		$.ajax({
@@ -134,12 +135,15 @@
 						},
 						methods: {
 							editdepartment: function (department) {
+								DepartmentEdit(department);
 							},
 							removedepartment: function (department) {
+								DepartmentRemove(department);
 							}
 						}
 					})
-					console.log(backData);
+				} else {
+					alert(backData.message);
 				}
 			},
 			error: function (error) {
@@ -147,6 +151,7 @@
 			}
 		})
 	}
+	//add department
 	function LoadAddDepartmentSelect() {
 		$.ajax({
 			method: "GET",
@@ -186,16 +191,110 @@
 			}
 		})
 	}
-	function editClick() {
+	
+	//edit department
+	function LoadModifyDepartmentSelect() {
 		$.ajax({
-			method: "POST",
-			url: "editdepartment",
-			data: {
-				departmentname: $("").val(),
-				pdepartmentid: $("").val(),
-				id:""
+			method: "GET",
+			url: "/getalldepartment",
+			data: {},
+			success: function (backData) {
+				if (backData.result == 1) {
+					new Vue({
+						el: '#editpdepartmentselect',
+						data: {
+							departments: backData.data
+						}
+					})
+					$("#editpdepartmentselect").attr("v-model", "pdepartmentid");
+				} else {
+					alert(backData.message)
+				}
+			},
+			error: function (error) {
+				alert(error.statusText);
 			}
 		})
+	}
+	var editVue = null;
+	//修改部门
+	function DepartmentEdit(department) {
+		if (editVue == null) {
+			editVue = new Vue({
+				el: "#editdepartment",
+				data: {
+					pdepartmentid: department.pdepartmentid,
+					department: department
+				},
+				methods: {
+					saveDepartment: function () {
+						this.department.pdepartmentid = $("#editpdepartmentselect").val();
+						$.ajax({
+							method: "PUT",
+							data: {
+								department: this.department
+							},
+							url: "/editdepartment",
+							success: function (backData) {
+								if (backData.result == 1) {
+
+								}
+								else {
+									alert(backData.message);
+								}
+								$("#ModifyModal").modal('hide');
+							},
+							error: function (error) {
+								alert(error.statusText);
+							}
+						});
+					}
+				},
+				watch: {
+					pdepartmentid: function (newpdepartmentid) {
+						//自己不能作为自己的父级部门
+						if (this.department.id == newpdepartmentid) {
+							$("#savaEditBtn").attr("disabled", "disabled");
+							alert("不能选择自己作为父级部门");
+						}
+						//实现更改的数据同时反映到列表的数据上
+						else {
+							$("#savaEditBtn").removeAttr("disabled");
+							this.department.pdepartmentid = newpdepartmentid;
+							this.department.pdepartmentname = $("#editpdepartmentselect").find("option:selected").text();
+						}
+					}
+				}
+			})			
+		}
+		else {
+			editVue.department = department;
+		}
+		$("#ModifyModal").modal("show");
+		editVue.pdepartmentid = department.pdepartmentid;
+		$("#editdepartmentselect").val(department.pdepartmentid);
+	}
+	//删除部门
+	function DepartmentRemove(department) {
+		if (confirm("确定删除" + department.departmentname + "吗?")) {
+			$.ajax({
+				method: "DELETE",
+				url: "/removedepartment",
+				data: {
+					departmentid: department.id
+				},
+				success: function (backData) {
+					if (backData.result == 1) {
+						$("#tr_" + department.id).remove();
+					} else {
+						alert(backData.message);
+					}
+				},
+				error: function (error) {
+					alert(error.statusText);
+				}
+			});
+		}
 	}
 	//tr组件
 	Vue.component("department-row", {
@@ -203,10 +302,10 @@
 		template: "#department-tr",
 		methods: {
 			editClick: function () {
-				this.$emit("editdepartment",this.department);
+				this.$emit('editdepartment',this.department);
 			},
 			removeClick: function () {
-				this.$emit("removedepartment", this.department);
+				this.$emit('removedepartment', this.department);
 			}
 		}
 	})
